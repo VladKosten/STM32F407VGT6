@@ -23,6 +23,11 @@ message(STATUS "MCU Model: ${MCU_MODEL}")
 # STM32F407VG have cortex-m4 core with FPU. So, we need to set the FPU type and the floating-point ABI.
 set(MCU_PARAMETER  -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mcpu=cortex-m4)
 
+set(LINKER_SCRIPT_STM32F407VGT ${CMAKE_CURRENT_SOURCE_DIR}/STM32F407VGTx_FLASH.ld)
+
+set(STARTUP_SCRIPT_STM32F407 ${CMAKE_CURRENT_SOURCE_DIR}/startup_stm32f407xx.s)
+
+
 message(STATUS "Startup Script: ${STARTUP_SCRIPT_STM32F407}"
                                 "Linker Script: ${LINKER_SCRIPT_STM32F407VGT}"
                                 "MCU Parameter: ${MCU_PARAMETER}"   )
