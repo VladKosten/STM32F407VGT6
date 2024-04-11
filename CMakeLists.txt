@@ -1,18 +1,7 @@
 # First, we need to check the version of CMake. If the version is less than 3.12, we need to stop the compilation process.
 cmake_minimum_required(VERSION 3.15)
 
-# Include the CMake ARM GCC toolchain file.
-if(NOT COMPILER)
-    include(gcc-arm-none-eabi.cmake)
-    message(STATUS "Compiler: arm-none-eabi-gcc")
-elseif(COMPILER STREQUAL "GCC")
-    include(gcc-arm-none-eabi.cmake)
-    message(STATUS "Compiler: ${COMPILER}")
-else()
-    # Need add clang compiler support
-    message(FATAL_ERROR "The compiler is not supported.")
-endif()
-
+include(gcc-arm-none-eabi.cmake)
 
 # Set the project name and enable the C and ASM languages.
 project(App C ASM)
@@ -62,7 +51,8 @@ target_compile_options(CompileOptions INTERFACE -Wall                           
                                                 -fno-common                     # In C, this option controls the placement of global variables defined without an initializer
                                                 -Wno-unused-variable            # do not warn about unused variables
                                                 -mthumb                         # generate code for the Thumb instruction set
-                                                ${MCU_PARAMETER})               # set the floating-point ABI)
+                                                ${MCU_PARAMETER}
+                                                )               # generate code for the Thumb instruction set
 
 # Set the compile options options based on the build type (Debug or Release)
 IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -79,26 +69,25 @@ message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 
 # Set the link options.
 target_link_options(CompileOptions INTERFACE -T${LINKER_SCRIPT}                 # set the linker script
-                                             -Wl,-Map=${CMAKE_PROJECT_NAME}.map # generate a map file
                                              -Wl,--gc-sections                  # enable garbage collection of unused input sections
-                                             -Wl,--start-group                  # start a group of input sections
-                                             --specs=nosys.specs                # use the nosys.specs file
-                                             --specs=nano.specs                 # use the nano.specs file
-                                             -Wl,--end-group                    # end a group of input sections
+                                             -specs=nano.specs                 # use the nano.specs file
+                                             -specs=nosys.specs                # use the nosys.specs file
                                              -Wl,--print-memory-usage           # print memory usage
                                              -mthumb                            # Link for the Thumb instruction set
-                                             ${MCU_PARAMETER})
+                                             ${MCU_PARAMETER})                   # set the floating-point ABI)
 
 # Add the subdirectories to the project to compile the source code.
 # add_subdirectory(app)
-add_subdirectory(core)
+add_subdirectory(config)
 add_subdirectory(device)
 add_subdirectory(driver)
 add_subdirectory(rtos)
 
 # Add the executable target to the project.
-add_executable(${CMAKE_PROJECT_NAME} ${STARTUP_SCRIPT})
+add_executable(${CMAKE_PROJECT_NAME} main.c
+                                    ${STARTUP_SCRIPT})
 
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Add the library targets to the executable target.
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE CompileOptions
-                                                    Core)
+                                            PRIVATE HAL)

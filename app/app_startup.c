@@ -1,28 +1,8 @@
 ﻿/**
- * \file      app_startup.c
- * \brief     This module represents initialization procedure and application startup
- *            in which all other application tasks are created and additional modules
- *            are initialized, allocated all required resources for the application
- *
- * \authors   Dmitry Stryzhevich(addDimaEmail@noreply.com) && Vladislav Savenia (savenia.vm@gmail.com)
- * \version   Changelog:
- *                   Version 2.1.0 D.Stryzhevich AppInit function was depricated. Only the AppStartup function
- *                   was left, which itself performs the entire startup procedure.
- *                   that
- *                   Version 2.0.0 VladSavenia
- *                      - Update file header.
- *                      - Translate to English.
- *                      - Move system callback functions to the app_startup.c from main.c.
- *                      - Add new init procedures such as uServer, etc. and much much more
- *                    Version 1.0.0 Dmitry Stryzhevich
- *                       - First release.
- *
- * \copyright Copyright (c) 2022 All rights reserved
- * \warning   A warning may be placed here...
- * \bug       Bug report may be placed here...
- */
-
-
+ * \file app_startup.c
+ * \brief Application startup
+ * \author: Vlad Kosten
+*/
 //===============================================================================[ INCLUDE ]=======================================================================================
 
 #include <stdint.h>
@@ -32,8 +12,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* Inlude your application-specific modules here !*/
-/* ... */
 
 //=====================================================================[ INTERNAL MACRO DEFENITIONS ]===============================================================================
 
@@ -50,22 +28,12 @@
  */
 static void appStartupTask(void *taskParamPtr);
 
-/**
- * \brief RTOS object: task handle
- */
-TaskHandle_t AppStartupTaskHandle = NULL;
-
-/**
- * \brief Init flag
- */
-static bool AppInitFlag = false;
 
 /**
  * \brief Events global counters
  */
 volatile uint64_t AppStartupGlobalTimeTickCount   = 0;  // Global system timer tick counter
 volatile uint32_t AppStartupIdleCount             = 0;  // Global low priority idle cycles counter
-volatile uint16_t AppStartupWdtExtKickCounter     = 0;  // Global watchdog reset counter
 
 //=======================================================================[PUBLIC INTERFACE FUNCTIONS]==============================================================================
 
@@ -101,9 +69,6 @@ AppStartupErr_t AppStartup(void)
 
 	return APP_STARTUP_EXEC_ERR;	// Exit: The application execution has been terminated with an error
 }
-
-
-
 
 
 //============================================================================[PRIVATE FUNCTIONS]===================================================================================
@@ -158,7 +123,6 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
     ASSERT(0);
 }
 
-
 /**
  * \brief      Application tick hook
  * \param[in]  no;
@@ -167,24 +131,10 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
  */
 void vApplicationTickHook(void)
 {
-#if APP_STARTUP_USE_EXT_WDT
-    /* Increment watchdog reset counter */
-    AppStartupWdtExtKickCounter++;
-    AppStartupWdtExtKickCounter %= APP_EXTERNAL_WDT_RESTART_TIME_MS / 2;
-
-    /* reset watchdog timer */
-    if(!AppStartupWdtExtKickCounter)
-    {
-        WdtExternalKick();
-    }
-#endif
-
-    /* Increment global time tick counter */
     CRITICAL_SECTION_ENTER();
     AppStartupGlobalTimeTickCount++;
     CRITICAL_SECTION_LEAVE();
 }
-
 
 /**
  * \brief      This function calls when RTOS processing IDLE task

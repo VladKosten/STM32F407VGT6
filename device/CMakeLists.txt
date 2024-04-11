@@ -12,6 +12,7 @@ target_compile_definitions(Device PUBLIC ${MCU_SERIES})
 target_include_directories(Device PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 
 # Link needed libraries
-target_link_libraries(Device PUBLIC Cmsis)
+target_link_libraries(Device PUBLIC Cmsis
+                             PRIVATE CompileOptions)
 
 

@@ -13,5 +13,6 @@ target_compile_definitions(HAL PUBLIC USE_HAL_DRIVER)
 
 # Add CMSIS library
 target_link_libraries(HAL PUBLIC Device
-                          PUBLIC Config)
+                          PUBLIC Config
+                          PRIVATE CompileOptions)
 
