@@ -1,0 +1,33 @@
+{
+    "configurations": [
+        {
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/App.elf",
+            "name": "Debug with pyOCD",
+            "request": "launch",
+            "type": "cortex-debug",
+            "svdPath": "${workspaceRoot}/device/",
+            "servertype": "pyocd",
+            "targetId": "stm32f407vgtx",
+            "serverArgs": [ // <- cmdline args for pyocd
+                        "--core=0",
+            ],
+            "svdFile": "device/stm32f407.svd",
+            "showDevDebugOutput": false,
+        },
+        {
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/App.elf",
+            "svdPath": "${workspaceRoot}/device",
+            "name": "Attach with pyOCD",
+            "request": "attach",
+            "type": "cortex-debug",
+            "servertype": "pyocd",
+            "targetId": "stm32f407vgtx",
+            "serverArgs": [ // <- cmdline args for pyocd
+                        "--core=0",
+            ],
+            "svdFile": "device/stm32f407.svd",
+            "showDevDebugOutput": false,
+        },
+    ],

@@ -1,0 +1,101 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "СMake Configure Project",
+			"type": "shell",
+			"command": "cmake -G\"Ninja\" -B build -S . -DCMAKE_BUILD_TYPE=${input:ReleaseType}",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "CMake Clean Project",
+			"type": "shell",
+			"command": "rm -rf build",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Ninja Build Project",
+			"type": "shell",
+			"command": "cmake --build build",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Ninja Clean Project",
+			"type": "shell",
+			"command": "cmake --build build --target clean",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Flash with PyOCD",
+			"type": "shell",
+			"dependsOn": [
+				"CMake Build Project",
+				"Clear MCU"
+			],
+			"command": "pyocd flash -t stm32f407vgtx -a 0x8000000 ./build/App.elf  ",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label" : "Clear with PyOCD",
+			"type": "shell",
+			"command" : "pyocd erase --chip stm32f407vgtx  ",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
+	],
+
+
+"inputs": [
+	{
+		"type": "pickString",
+		"id": "ReleaseType",
+		"description": "What type of release ?",
+		"options": [
+		  "Release",
+		  "Debug"
+		],
+		"default": "Debug"
+	  },
+  ]
+}
