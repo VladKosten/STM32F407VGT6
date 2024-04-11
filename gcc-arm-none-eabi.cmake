@@ -10,9 +10,6 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 # Set the toolchain prefix
 set(TOOLCHAIN_PREFIX arm-none-eabi-)
 
-
-
-
 # Set the compiler and linker
 set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}gcc)
 set(CMAKE_ASM_COMPILER ${CMAKE_C_COMPILER})
@@ -22,3 +19,4 @@ set(CMAKE_OBJDUMP ${TOOLCHAIN_PREFIX}objdump)
 
 # Add suffix to the executables,
 set(CMAKE_EXECUTABLE_SUFFIX_ASM ".elf")
+set(CMAKE_EXECUTABLE_SUFFIX_C ".elf")

@@ -57,8 +57,7 @@
 			"label": "Flash with PyOCD",
 			"type": "shell",
 			"dependsOn": [
-				"CMake Build Project",
-				"Clear MCU"
+				"Ninja Build Project",
 			],
 			"command": "pyocd flash -t stm32f407vgtx -a 0x8000000 ./build/App.elf  ",
 			"options": {

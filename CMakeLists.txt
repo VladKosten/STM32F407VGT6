@@ -11,29 +11,20 @@ message(STATUS "Project Name: ${CMAKE_PROJECT_NAME}")
 set(CMAKE_C_STANDARD 99)
 
 # Set the MCU parameters.
-if(NOT MCU_MODEL)
-    set(MCU_FAMILY STM32F4)
-    set(MCU_SERIES STM32F407xx)
-    set(MCU_MODEL STM32F407VG)
-elseif(MCU_MODEL STREQUAL STM32F407VG)
-    set(MCU_FAMILY STM32F4)
-    set(MCU_SERIES STM32F407xx)
-endif()
+set(MCU_FAMILY STM32F4)
+set(MCU_SERIES STM32F407xx)
+set(MCU_MODEL STM32F407VG)
+
 
 message(STATUS "MCU Family: ${MCU_FAMILY}")
 message(STATUS "MCU Series: ${MCU_SERIES}")
 message(STATUS "MCU Model: ${MCU_MODEL}")
 
-# Set the startup file and linker script based on the MCU model. And set specific compiler options based on the MCU model.
 # STM32F407VG have cortex-m4 core with FPU. So, we need to set the FPU type and the floating-point ABI.
-if(MCU_SERIES STREQUAL STM32F407xx)
-    set(STARTUP_SCRIPT ${STARTUP_SCRIPT_STM32F407})
-    set(LINKER_SCRIPT ${LINKER_SCRIPT_STM32F407VGT})
-    set(MCU_PARAMETER  -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mcpu=cortex-m4)
-endif()
+set(MCU_PARAMETER  -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mcpu=cortex-m4)
 
-message(STATUS "Startup Script: ${STARTUP_SCRIPT}"
-                                "Linker Script: ${LINKER_SCRIPT}"
+message(STATUS "Startup Script: ${STARTUP_SCRIPT_STM32F407}"
+                                "Linker Script: ${LINKER_SCRIPT_STM32F407VGT}"
                                 "MCU Parameter: ${MCU_PARAMETER}"   )
 
 # Add interface library to set the compile and link options to all targets.
@@ -68,26 +59,26 @@ ENDIF()
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 
 # Set the link options.
-target_link_options(CompileOptions INTERFACE -T${LINKER_SCRIPT}                 # set the linker script
-                                             -Wl,--gc-sections                  # enable garbage collection of unused input sections
+target_link_options(CompileOptions INTERFACE -T${LINKER_SCRIPT_STM32F407VGT}   # set the linker script
+                                             -Wl,--gc-sections                 # enable garbage collection of unused input sections
                                              -specs=nano.specs                 # use the nano.specs file
                                              -specs=nosys.specs                # use the nosys.specs file
-                                             -Wl,--print-memory-usage           # print memory usage
-                                             -mthumb                            # Link for the Thumb instruction set
-                                             ${MCU_PARAMETER})                   # set the floating-point ABI)
+                                             -Wl,--print-memory-usage          # print memory usage
+                                             -mthumb                           # Link for the Thumb instruction set
+                                             ${MCU_PARAMETER})                 # set the floating-point ABI)
 
 # Add the subdirectories to the project to compile the source code.
 # add_subdirectory(app)
 add_subdirectory(config)
 add_subdirectory(device)
 add_subdirectory(driver)
-add_subdirectory(rtos)
+# add_subdirectory(rtos)
 
 # Add the executable target to the project.
 add_executable(${CMAKE_PROJECT_NAME} main.c
-                                    ${STARTUP_SCRIPT})
+                                    ${STARTUP_SCRIPT_STM32F407})
 
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
 # Add the library targets to the executable target.
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE CompileOptions
                                             PRIVATE HAL)

@@ -2,7 +2,6 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f407xx.h"
 #include "assert.h"
-#include "main.h"
 
 void SystemClock_Config(void);
 
@@ -119,7 +118,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   if(HAL_TIM_Base_Init(&htim14) == HAL_OK)
   {
     /* Start the TIM time Base generation in interrupt mode */
-    // return HAL_TIM_Base_Start_IT(&htim14);
+    return HAL_TIM_Base_Start_IT(&htim14);
   }
 
   /* Return function status */
