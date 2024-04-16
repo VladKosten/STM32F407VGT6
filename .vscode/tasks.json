@@ -82,6 +82,22 @@
 			},
 			"problemMatcher": []
 		},
+		{
+			"label": "Flash with OpenOCD",
+			"type": "shell",
+			"dependsOn": [
+				"Ninja Build Project",
+			],
+			"command": "openocd -f interface/stlink-v2.cfg -f target/stm32f4x.cfg -c 'program build/App.elf verify reset exit' ",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": []
+		},
 	],
 
 

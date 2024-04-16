@@ -30,4 +30,21 @@
             "svdFile": "device/stm32f407.svd",
             "showDevDebugOutput": false,
         },
+
+        {
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/App.elf",
+            "name": "Debug with openOCD",
+            "request": "launch",
+            "type": "cortex-debug",
+            "svdPath": "${workspaceRoot}/device/",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink-v2.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "svdFile": "device/stm32f407.svd",
+            "showDevDebugOutput": false,
+        },
     ],
+}

@@ -4,6 +4,9 @@
         "stm32f4xx_hal.h": "c",
         "task.h": "c",
         "freertos.h": "c",
-        "portable.h": "c"
+        "portable.h": "c",
+        "app_startup.h": "c",
+        "stddef.h": "c",
+        "system_stm32f4xx.h": "c"
     }
 }
