@@ -16,7 +16,7 @@ extern "C"{
 /**
 * \brief Application startup task priority (must have the highest level)
 */
-#define APP_STARTUP_TASK_PRIORITY		        (tskIDLE_PRIORITY + 5)
+#define APP_STARTUP_TASK_PRIORITY		        (configMAX_PRIORITIES - 1u)
 
 /**
 * \brief Application startup task stack size
@@ -27,17 +27,6 @@ extern "C"{
 * \brief Application startup delay ms
 */
 #define APP_STARTUP_DELAY_MS                    100u
-
-/**
-* \brief Using of an external supervisor/watchdog
-*/
-#define APP_STARTUP_USE_EXT_WDT                 0
-
-/**
- * \brief External watchdog restart period
- */
-#define APP_EXTERNAL_WDT_RESTART_TIME_MS        38
-
 
 /*========================================================[DATA TYPES DEFINITIONS]=========================================*/
 

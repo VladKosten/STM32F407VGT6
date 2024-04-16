@@ -9,12 +9,23 @@
 #include <stddef.h>
 
 #include "app_startup.h"
+#include "FreeRTOSConfig.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
 
 //=====================================================================[ INTERNAL MACRO DEFENITIONS ]===============================================================================
 
+/**
+ * \brief Assert macro
+ */
+#ifndef APP_STARTUP_ASSERT
+    #ifdef configASSERT
+        #define APP_STARTUP_ASSERT(expr) configASSERT(expr)
+    #else
+        #define APP_STARTUP_ASSERT(expr)
+    #endif
+#endif
 
 //====================================================================[ INTERNAL DATA TYPES DEFINITIONS ]===========================================================================
 
@@ -28,6 +39,15 @@
  */
 static void appStartupTask(void *taskParamPtr);
 
+/**
+ * \brief Application flag
+*/
+static bool AppInitFlag = false;
+
+/**
+ * \brief Application startup task handle
+*/
+static TaskHandle_t AppStartupTaskHandle = NULL;
 
 /**
  * \brief Events global counters
@@ -56,13 +76,16 @@ AppStartupErr_t AppStartup(void)
 		APP_STARTUP_TASK_PRIORITY,						// Startup task priority = set the highest priority
 		&appStartupTaskHandle							// Startup task handle
 	);
-    ASSERT(appStartupTaskHandle);
+
+    APP_STARTUP_ASSERT(appStartupTaskHandle);
 
     /* Checking */
 	if(startupTaskCreateErr != pdPASS)
 	{
 		return APP_STARTUP_INIT_ERR;    // Exit: Error: Application init error
 	}
+
+
 
 	/* Start the RTOS */
 	vTaskStartScheduler();
@@ -104,7 +127,7 @@ static void appStartupTask(void* param)
 		vTaskDelete(NULL);
 
 		/* We should not get here !*/
-		ASSERT(0);
+		APP_STARTUP_ASSERT(0);
 	}
 }
 
@@ -120,7 +143,9 @@ static void appStartupTask(void* param)
  */
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 {
-    ASSERT(0);
+    (void)xTask;
+    (void)pcTaskName;
+    APP_STARTUP_ASSERT(0);
 }
 
 /**
@@ -131,9 +156,9 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
  */
 void vApplicationTickHook(void)
 {
-    CRITICAL_SECTION_ENTER();
+    // portENTER_CRITICAL();
     AppStartupGlobalTimeTickCount++;
-    CRITICAL_SECTION_LEAVE();
+    // portEXIT_CRITICAL();
 }
 
 /**
@@ -157,7 +182,7 @@ void vApplicationIdleHook(void)
  */
 void vApplicationMallocFailedHook(void)
 {
-    ASSERT(0); // Insert assert to catch such case
+    APP_STARTUP_ASSERT(0); // Insert assert to catch such case
 }
 
 
