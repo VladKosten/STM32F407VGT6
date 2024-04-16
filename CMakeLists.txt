@@ -77,7 +77,8 @@ target_link_options(CompileOptions INTERFACE -T${LINKER_SCRIPT_STM32F407VGT}   #
 add_subdirectory(config)
 add_subdirectory(device)
 add_subdirectory(driver)
-# add_subdirectory(rtos)
+add_subdirectory(app)
+add_subdirectory(rtos)
 
 # Add the executable target to the project.
 add_executable(${CMAKE_PROJECT_NAME} main.c
@@ -86,4 +87,5 @@ add_executable(${CMAKE_PROJECT_NAME} main.c
 
 # Add the library targets to the executable target.
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE CompileOptions
-                                            PRIVATE HAL)
+                                            PRIVATE HAL
+                                            PRIVATE Application)
